@@ -27,24 +27,38 @@ public class MpGenerator {
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor("");
         gc.setOpen(false);
-        // gc.setSwagger2(true); 实体属性 Swagger2 注解
+        // 实体属性 Swagger2 注解
+         gc.setSwagger2(true);
+        gc.setBaseResultMap(true);
+                // XML ColumnList: mapper.xml生成查询结果列
+        gc.setBaseColumnList(true);
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://127.0.0.1:3306/数据库名称?characterEncoding=utf8&useSSL=true&&serverTimezone=GMT%2B8");
+        dsc.setUrl("jdbc:mysql://127.0.0.1:3306/?characterEncoding=utf8&useSSL=true&&serverTimezone=GMT%2B8");
         // dsc.setSchemaName("public");
 //        根据数据库版本自定义的驱动
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("数据库的密码");
+        dsc.setPassword("");
         mpg.setDataSource(dsc);
 
         // 包配置
         PackageConfig pc = new PackageConfig();
 
         // 自定义包名字
-        pc.setParent("com.myself.project");
+        pc.setParent("com.myself.seckill");
+
+//         自定义包名字，及各个生成类的存放包名字
+//        pc.setParent("")
+//                .setEntity("")
+//                .setMapper("")
+//                .setService("")
+//                .setServiceImpl("")
+//                .setController("")
+//                .setXml("");
+
         mpg.setPackageInfo(pc);
 
         // 自定义配置
@@ -114,6 +128,7 @@ public class MpGenerator {
 //        strategy.setSuperEntityColumns("id");
 //        这里不再用输入的方式手动输入表面，直接获取全部的表，如果没有生成会自动生成，已存在的不用理会
 //        strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
+//         controller映射地址：驼峰转连字符
         strategy.setControllerMappingHyphenStyle(true);
 //        表的前缀
         strategy.setTablePrefix("t_");
