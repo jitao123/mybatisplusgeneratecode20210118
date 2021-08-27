@@ -1,5 +1,7 @@
 package com.myself.mybatisplusgeneratecode;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
@@ -27,6 +29,8 @@ public class MpGenerator {
         gc.setOutputDir(projectPath + "/src/main/java");
         gc.setAuthor("");
         gc.setOpen(false);
+        //ID注解
+        gc.setIdType(IdType.ASSIGN_UUID);
         // 实体属性 Swagger2 注解
          gc.setSwagger2(true);
         gc.setBaseResultMap(true);
@@ -82,7 +86,7 @@ public class MpGenerator {
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
                 return projectPath + "/src/main/resources/mapper/"
-                        + "/" + tableInfo.getEntityName() + "Mapper" + ".xml";
+                        + "/" + tableInfo.getEntityName() + "Mapper" +   StringPool.DOT_XML;
             }
         });
         /*
@@ -121,6 +125,8 @@ public class MpGenerator {
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
 //        strategy.setSuperEntityClass("你自己的父类实体,没有就不用设置!");
         strategy.setEntityLombokModel(true);
+        //设置 TableField注解内容
+        strategy.setEntityTableFieldAnnotationEnable(true);
 //        strategy.setRestControllerStyle(true);
 //        // 公共父类 所有的controller 继承一个baseController 不用在页面 @Autowired
 //        strategy.setSuperControllerClass("你自己的父类控制器,没有就不用设置!");
@@ -129,6 +135,8 @@ public class MpGenerator {
 //        这里不再用输入的方式手动输入表面，直接获取全部的表，如果没有生成会自动生成，已存在的不用理会
 //        strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
 //         controller映射地址：驼峰转连字符
+        //RestController注解
+        strategy.setRestControllerStyle(true);
         strategy.setControllerMappingHyphenStyle(true);
 //        表的前缀
         strategy.setTablePrefix("t_");
