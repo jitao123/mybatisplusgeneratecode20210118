@@ -20,49 +20,58 @@ import java.util.List;
  */
 public class MpGenerator {
     public static void main(String[] args) {
-        // 代码生成器 修改下面的一些配置后 直接运行main 方法
+        // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
-
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
+        //获取当前的项目根路径
         String projectPath = System.getProperty("user.dir");
+        // Java代码的存放位置
         gc.setOutputDir(projectPath + "/src/main/java");
+        //作者 ，会在生成的类上显示
         gc.setAuthor("");
+        //是否打开文件
         gc.setOpen(false);
-        //ID注解
+        //ID生成策略
         gc.setIdType(IdType.ASSIGN_UUID);
         // 实体属性 Swagger2 注解
-         gc.setSwagger2(true);
+        gc.setSwagger2(true);
+        // 生成mapper.xml文件中的 ResultMap 对象
         gc.setBaseResultMap(true);
-                // XML ColumnList: mapper.xml生成查询结果列
+        // XML ColumnList: mapper.xml生成查询结果列
         gc.setBaseColumnList(true);
+        //设置到 mpg 中
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
+        //数据库链接的url 部分 只需更换 ip地址+端口 + 数据库名称  ？号前的部分
         dsc.setUrl("jdbc:mysql://127.0.0.1:3306/?characterEncoding=utf8&useSSL=true&&serverTimezone=GMT%2B8");
-        // dsc.setSchemaName("public");
-//        根据数据库版本自定义的驱动
+//        根据数据库版本自定义的驱动类型 5.几 以前用  com.mysql.jdbc.Driver
+//        8.0以上用 com.mysql.cj.jdbc.Driver
         dsc.setDriverName("com.mysql.cj.jdbc.Driver");
+        //数据库用户名
         dsc.setUsername("root");
+        //数据库密码
         dsc.setPassword("");
+        //将数据库信息设置到 mpg中
         mpg.setDataSource(dsc);
 
         // 包配置
         PackageConfig pc = new PackageConfig();
+        // 自定义包名字 一般是根路径下的基础包
+        pc.setParent("com.example.user");
 
-        // 自定义包名字
-        pc.setParent("com.myself.seckill");
-
-//         自定义包名字，及各个生成类的存放包名字
+//         自定义包名字，及各个生成类的存放包名字 如果没有特定义，
+//         就是常规的 controller 、service、(service 下的 impl)、mapper、entity
 //        pc.setParent("")
 //                .setEntity("")
 //                .setMapper("")
 //                .setService("")
 //                .setServiceImpl("")
 //                .setController("")
-//                .setXml("");
 
+        //将包相关设置放入到 mpg
         mpg.setPackageInfo(pc);
 
         // 自定义配置
@@ -75,7 +84,7 @@ public class MpGenerator {
 
         // 如果模板引擎是 freemarker
         String templatePath = "/templates/mapper.xml.ftl";
-        // 如果模板引擎是 velocity
+        // 如果模板引擎是 velocity 切换成 下面这个
         // String templatePath = "/templates/mapper.xml.vm";
 
         // 自定义输出配置
@@ -84,9 +93,10 @@ public class MpGenerator {
         focList.add(new FileOutConfig(templatePath) {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
+                // 自定义输出文件名 ，
+                // 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
                 return projectPath + "/src/main/resources/mapper/"
-                        + "/" + tableInfo.getEntityName() + "Mapper" +   StringPool.DOT_XML;
+                        + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
         /*
@@ -104,7 +114,9 @@ public class MpGenerator {
             }
         });
         */
+        //将配置好的输出模板信息放入 cfg
         cfg.setFileOutConfigList(focList);
+        //将配置好的cfg放入mpg
         mpg.setCfg(cfg);
 
         // 配置模板
@@ -123,9 +135,12 @@ public class MpGenerator {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+        //设置需要继承的父类
 //        strategy.setSuperEntityClass("你自己的父类实体,没有就不用设置!");
+
+        //在实体类上开启lombok注解
         strategy.setEntityLombokModel(true);
-        //设置 TableField注解内容
+        //设置 TableField注解内容 属性对应的数据库字段
         strategy.setEntityTableFieldAnnotationEnable(true);
 //        strategy.setRestControllerStyle(true);
 //        // 公共父类 所有的controller 继承一个baseController 不用在页面 @Autowired
@@ -138,11 +153,10 @@ public class MpGenerator {
         //RestController注解
         strategy.setRestControllerStyle(true);
         strategy.setControllerMappingHyphenStyle(true);
-//        表的前缀
-        strategy.setTablePrefix("t_");
+//        表的前缀 没有就不写
+//        strategy.setTablePrefix("t_");
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();
     }
-
 }
